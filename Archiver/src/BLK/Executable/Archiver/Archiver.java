@@ -1,14 +1,14 @@
 /*
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
  */
 
@@ -70,7 +70,7 @@ class Archiver extends BLK.System.Threads.Thread
             m=m-1024;
         }
 
-        Folder f = Main.getBase();
+        Folder f = Main.getBaseArchive();
         f=new Folder(f,b.toString());
         f=new Folder(f,k.toString());
         f=new Folder(f,m.toString());
@@ -87,7 +87,7 @@ class Archiver extends BLK.System.Threads.Thread
             file.delete();
             return;
         }
-        if(file.getExtension().equalsIgnoreCase("blkd"))
+        if(file.getExtension() !=null && file.getExtension().equalsIgnoreCase("blkd"))
             return;
 
         String UID=file.getUid();
@@ -108,14 +108,18 @@ class Archiver extends BLK.System.Threads.Thread
             if(data.setData(getInfo(file)+data_ori.getData()))
             {
                 if(bin.exists())
+                {
                     if(file.delete())
                         Main.updateIndex(file);
+                }
                 else
+                {
                     if(file.move(bin))
                     {
                         Main.updateIndex(bin);
                         Main.updateIndex(file);
                     }
+                }
                 
                 if(bin.exists())
                     if(data_ori.delete())
